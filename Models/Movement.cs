@@ -7,16 +7,16 @@ namespace WalletAPI.Models
 {
     public class Movement
     {
-       private int Id { get; set; }
+        public int Id { get; set; }
 
-       private string Name { get; set; }
+        public string Name { get; set; }
 
-        private string Category { get; set; }
+        public string Category { get; set; }
 
-        private decimal Ammount { get; set; }
+        public decimal Ammount { get; set; }
 
-        private DateTime DateTime { get; set; }
+        public DateTime DateTime { get; set; }
 
-        private Boolean Type { get; set; }
+        public Boolean Type { get; set; }
     }
 }
