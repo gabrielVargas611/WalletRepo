@@ -6,20 +6,20 @@ using WalletAPI.Models;
 
 namespace WalletAPI.Contract
 {
-    interface IMovement
+    public interface IMovement
     {
         bool Create(Movement movement);
 
-        //List<Movement> Get();
+       List<Movement> Get();
 
-        //Movement Get(int id);
+        Movement Get(int id);
 
-        //void Remove(int id);
+        void Remove(int id);
 
         ////Pregunatr por este, el por q existe, creo q es para borrar un seleionado
-        ////void remove(int id, Movement moventIn);
+        void remove(int id, Movement moventIn);
 
         ////Preguntar por q 2 aqui
-        //void Upgrade(string id, Movement movementIn);
+        void Upgrade(int id, Movement movementIn);
     }
 }

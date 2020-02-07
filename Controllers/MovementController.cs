@@ -4,47 +4,69 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WalletAPI.Contract;
 using WalletAPI.Models;
 
 namespace WalletAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MovementController : ControllerBase
+    public class MovementController : ControllerBase 
     {
+        private readonly IMovement _movementService;
+        public MovementController(IMovement movementService)
+        {
+            _movementService = movementService;
+        }
         // GET: api/Movement
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public ActionResult<List<Movement>> Get() => _movementService.Get();
 
         // GET: api/Movement/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public ActionResult<Movement> Get(int id)
         {
-            return "value";
+            var movement = _movementService.Get(id);
+            if(movement == null)
+            {
+                return NotFound();
+            }
+            return movement;
         }
 
         // POST: api/Movement
         [HttpPost]
-        public void Post(Movement movements)
+        public ActionResult<Movement> Create(Movement movement)
         {
-            var movement = new Movement();
-            movement = movements;
+            _movementService.Create(movement);
 
+            return CreatedAtRoute("GetMovement", new { id = movement.Id.ToString() }, movement);
         }
 
         // PUT: api/Movement/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Update(int id, Movement movementp)
         {
+            var movement = _movementService.Get(id);
+            if (movement == null)
+                return NotFound();
+
+            _movementService.Upgrade(id, movementp);
+
+            return NoContent();
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var movement = _movementService.Get(id);
+            if (movement == null)
+                return NotFound();
+
+            _movementService.Remove(movement.Id);
+
+            return NoContent();
         }
     }
 }

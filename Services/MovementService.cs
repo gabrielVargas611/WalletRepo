@@ -22,6 +22,10 @@ namespace WalletAPI.Services
             _movement= database.GetCollection<Movement>(CollectionName);
         }
 
+        public List<Movement> Get() => _movement.Find(movement => true).ToList();
+
+        public Movement Get(int id) => _movement.Find(movement => movement.Id == id).FirstOrDefault();
+
         public bool Create(Movement movement)
         {
             bool result = false;
@@ -36,6 +40,17 @@ namespace WalletAPI.Services
             }
             return result;
         }
+
+        public void Upgrade(int id, Movement movementIn)
+        {
+            _movement.ReplaceOne(movement => movement.Id == id, movementIn);
+        }
+
+        public void remove(int id,Movement moventIn) =>
+           _movement.DeleteOne(movement => movement.Id == moventIn.Id);
+
+        public void Remove(int id) =>
+            _movement.DeleteOne(movement => movement.Id == id);
 
     }
 }
