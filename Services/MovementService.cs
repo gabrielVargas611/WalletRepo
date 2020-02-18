@@ -9,7 +9,7 @@ using WalletAPI.Settings;
 
 namespace WalletAPI.Services
 {
-    public class MovementService : IMovement
+    public class MovementService : IMovementService
     {
         private const string CollectionName = "Movements";
         private readonly IMongoCollection<Movement> _movement;
@@ -46,7 +46,7 @@ namespace WalletAPI.Services
             _movement.ReplaceOne(movement => movement.Id == id, movementIn);
         }
 
-        public void remove(int id,Movement moventIn) =>
+        public void Remove(int id,Movement moventIn) =>
            _movement.DeleteOne(movement => movement.Id == moventIn.Id);
 
         public void Remove(int id) =>

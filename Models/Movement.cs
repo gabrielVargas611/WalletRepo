@@ -17,6 +17,6 @@ namespace WalletAPI.Models
 
         public DateTime DateTime { get; set; }
 
-        public Boolean Type { get; set; }
+        public bool movementType { get; set; }
     }
 }

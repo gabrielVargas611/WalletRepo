@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using WalletAPI.Contract;
+using WalletAPI.Services;
+using WalletAPI.Settings;
 
 namespace WalletAPI
 {
@@ -25,7 +29,22 @@ namespace WalletAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // requires using Microsoft.Extensions.Options
+            services.Configure<MongoDbSettings>(
+                Configuration.GetSection(nameof(MongoDbSettings)));
+
+            services.AddSingleton<IMongoDbSettings>(sp =>
+                sp.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+
+            // The singleton service lifetime is most appropriate because BookService 
+            // takes a direct dependency on MongoClient. Per the official Mongo Client 
+            // reuse guidelines, MongoClient should be registered in DI with a singleton 
+            // service lifetime.
+            // https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app?view=aspnetcore-3.0&tabs=visual-studio
+            services.AddSingleton<IMovementService, MovementService>();
+
             services.AddControllers();
+             // .AddNewtonsoftJson(options => options.UseMemberCasing());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

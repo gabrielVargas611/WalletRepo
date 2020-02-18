@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WalletAPI.Contract;
 using WalletAPI.Models;
+using WalletAPI.Services;
+using WalletAPI.Settings;   
 
 namespace WalletAPI.Controllers
 {
@@ -13,11 +15,12 @@ namespace WalletAPI.Controllers
     [ApiController]
     public class MovementController : ControllerBase 
     {
-        private readonly IMovement _movementService;
-        public MovementController(IMovement movementService)
+        private readonly IMovementService _movementService;
+        public MovementController(IMovementService movementService)
         {
             _movementService = movementService;
         }
+
         // GET: api/Movement
         [HttpGet]
         public ActionResult<List<Movement>> Get() => _movementService.Get();
@@ -36,8 +39,11 @@ namespace WalletAPI.Controllers
 
         // POST: api/Movement
         [HttpPost]
-        public ActionResult<Movement> Create(Movement movement)
+        public ActionResult<Movement> Create([FromBody] Movement movement)
         {
+            var list = new List<Movement>();
+            var strings = new List<string>();
+
             _movementService.Create(movement);
 
             return CreatedAtRoute("GetMovement", new { id = movement.Id.ToString() }, movement);
@@ -67,6 +73,74 @@ namespace WalletAPI.Controllers
             _movementService.Remove(movement.Id);
 
             return NoContent();
+        }
+    }
+    public class Test<T>
+    {
+        public Test()
+        {
+
+        }
+    }
+
+    public interface IVehicle
+    {
+        public Vehicle GetVehicle();
+    }
+
+    public class Vehicle : AutoMotor
+    {
+        protected override string StartEngine()
+        {
+            var result = base.StartEngine();
+            return "Vehicule" + result;
+        }
+    }
+
+    public class Moto : AutoMotor
+    {
+        protected override string StartEngine()
+        {
+            var result = base.StartEngine();
+            return "Moto" + result;
+        }
+    }
+
+    internal class Chasis : Vehicle 
+    {
+        protected override string StartEngine()
+        {
+            return base.StartEngine();
+        }
+    }
+
+    public class AutoMotor
+    {
+        protected virtual string StartEngine()
+        {
+            return "Started";
+        }
+    }
+
+    public class VehicleService : IVehicle
+    {
+        public Vehicle GetVehicle()
+        {
+            return new Vehicle();
+        }
+    }
+
+    public class VehiculeRest
+    {
+        private readonly IVehicle _vehicleService;
+        public VehiculeRest(IVehicle vehicleService)
+        {
+            _vehicleService = vehicleService;
+        }
+
+        public object Get()
+        {
+            return _vehicleService.GetVehicle();
         }
     }
 }
