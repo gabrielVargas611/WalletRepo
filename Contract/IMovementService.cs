@@ -16,10 +16,8 @@ namespace WalletAPI.Contract
 
         void Remove(int id);
 
-        // Pregunatr por este, el por q existe, creo q es para borrar un seleionado
         void Remove(int id, Movement moventIn);
 
-        // Preguntar por q 2 aqui
-        void Upgrade(int id, Movement movementIn);
+        void Update(int id, Movement movementIn);
     }
 }

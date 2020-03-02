@@ -42,6 +42,8 @@ namespace WalletAPI
             // service lifetime.
             // https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app?view=aspnetcore-3.0&tabs=visual-studio
             services.AddSingleton<IMovementService, MovementService>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<ICategoryService, CategoryService>();
 
             services.AddControllers();
              // .AddNewtonsoftJson(options => options.UseMemberCasing());

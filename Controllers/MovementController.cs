@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using WalletAPI.Contract;
 using WalletAPI.Models;
 using WalletAPI.Services;
-using WalletAPI.Settings;   
+using WalletAPI.Settings;
 
 namespace WalletAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MovementController : ControllerBase 
+    public class MovementController : ControllerBase
     {
         private readonly IMovementService _movementService;
         public MovementController(IMovementService movementService)
@@ -21,16 +21,18 @@ namespace WalletAPI.Controllers
             _movementService = movementService;
         }
 
-        // GET: api/Movement
+        // GET: api/Movement/All
         [HttpGet]
+        [Route("All")]
         public ActionResult<List<Movement>> Get() => _movementService.Get();
 
-        // GET: api/Movement/5
-        [HttpGet("{id}", Name = "Get")]
+        // GET: api/Movement/GetOne/5
+        [HttpGet("{id}")]
+        [Route("Movement/GetOne")]
         public ActionResult<Movement> Get(int id)
         {
             var movement = _movementService.Get(id);
-            if(movement == null)
+            if (movement == null)
             {
                 return NotFound();
             }
@@ -41,9 +43,6 @@ namespace WalletAPI.Controllers
         [HttpPost]
         public ActionResult<Movement> Create([FromBody] Movement movement)
         {
-            var list = new List<Movement>();
-            var strings = new List<string>();
-
             _movementService.Create(movement);
 
             return CreatedAtRoute("GetMovement", new { id = movement.Id.ToString() }, movement);
@@ -57,7 +56,7 @@ namespace WalletAPI.Controllers
             if (movement == null)
                 return NotFound();
 
-            _movementService.Upgrade(id, movementp);
+            _movementService.Update(id, movementp);
 
             return NoContent();
         }
@@ -80,67 +79,6 @@ namespace WalletAPI.Controllers
         public Test()
         {
 
-        }
-    }
-
-    public interface IVehicle
-    {
-        public Vehicle GetVehicle();
-    }
-
-    public class Vehicle : AutoMotor
-    {
-        protected override string StartEngine()
-        {
-            var result = base.StartEngine();
-            return "Vehicule" + result;
-        }
-    }
-
-    public class Moto : AutoMotor
-    {
-        protected override string StartEngine()
-        {
-            var result = base.StartEngine();
-            return "Moto" + result;
-        }
-    }
-
-    internal class Chasis : Vehicle 
-    {
-        protected override string StartEngine()
-        {
-            return base.StartEngine();
-        }
-    }
-
-    public class AutoMotor
-    {
-        protected virtual string StartEngine()
-        {
-            return "Started";
-        }
-    }
-
-    public class VehicleService : IVehicle
-    {
-        public Vehicle GetVehicle()
-        {
-            return new Vehicle();
-        }
-    }
-
-    public class VehiculeRest
-    {
-        private readonly IVehicle _vehicleService;
-        public VehiculeRest(IVehicle vehicleService)
-        {
-            _vehicleService = vehicleService;
-        }
-
-        public object Get()
-        {
-            return _vehicleService.GetVehicle();
         }
     }
 }

@@ -9,29 +9,25 @@ using WalletAPI.Settings;
 
 namespace WalletAPI.Services
 {
-    public class MovementService : IMovementService
+    public class MovementService : ServiceBase<Movement>, IMovementService
     {
         private const string CollectionName = "Movements";
-        private readonly IMongoCollection<Movement> _movement;
 
         public MovementService(IMongoDbSettings settings)
+            : base(settings, CollectionName)
         {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-
-            _movement= database.GetCollection<Movement>(CollectionName);
         }
 
-        public List<Movement> Get() => _movement.Find(movement => true).ToList();
+        public List<Movement> Get() => MongoCollection.Find(movement => true).ToList();
 
-        public Movement Get(int id) => _movement.Find(movement => movement.Id == id).FirstOrDefault();
+        public Movement Get(int id) => MongoCollection.Find(movement => movement.Id == id).FirstOrDefault();
 
         public bool Create(Movement movement)
         {
             bool result = false;
             try
             {
-                _movement.InsertOne(movement);
+                MongoCollection.InsertOne(movement);
                 result = true;
             }
             catch (Exception ex)
@@ -41,16 +37,16 @@ namespace WalletAPI.Services
             return result;
         }
 
-        public void Upgrade(int id, Movement movementIn)
+        public void Update(int id, Movement movementIn)
         {
-            _movement.ReplaceOne(movement => movement.Id == id, movementIn);
+            MongoCollection.ReplaceOne(movement => movement.Id == id, movementIn);
         }
 
         public void Remove(int id,Movement moventIn) =>
-           _movement.DeleteOne(movement => movement.Id == moventIn.Id);
+           MongoCollection.DeleteOne(movement => movement.Id == moventIn.Id);
 
         public void Remove(int id) =>
-            _movement.DeleteOne(movement => movement.Id == id);
+            MongoCollection.DeleteOne(movement => movement.Id == id);
 
     }
 }
